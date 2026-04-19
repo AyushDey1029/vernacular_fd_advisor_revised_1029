@@ -5,10 +5,20 @@
 
 const OpenAI = require('openai');
 
-const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY || 'MISSING_KEY',
-  baseURL: "https://api.groq.com/openai/v1",
-});
+let client;
+function getClient() {
+  if (!client) {
+    const apiKey = process.env.GROQ_API_KEY;
+    if (!apiKey) {
+      console.warn("[OpenAI Service] WARNING: GROQ_API_KEY is not set in environment variables.");
+    }
+    client = new OpenAI({
+      apiKey: apiKey || 'MISSING_KEY',
+      baseURL: "https://api.groq.com/openai/v1",
+    });
+  }
+  return client;
+}
 
 /**
  * Fallback response mechanism based on language
@@ -82,7 +92,7 @@ Now answer clearly.
       { role: "user", content: prompt }
     ];
 
-    const response = await client.chat.completions.create({
+    const response = await getClient().chat.completions.create({
       model: "llama-3.1-8b-instant",
       messages: messages,
     });
