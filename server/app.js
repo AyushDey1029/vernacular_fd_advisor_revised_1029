@@ -26,10 +26,21 @@ const PORT = process.env.PORT || 5000;
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 
-// Allow all origins in development. Restrict in production.
+// Allow all origins in development and mapped ORIGIN in Prod. 
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.CLIENT_ORIGIN,
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
-  methods: ['GET', 'POST'],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
 }));
 
 // Parse incoming JSON bodies

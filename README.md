@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏦 Vernacular FD Advisor
 
 > A multilingual AI-powered Fixed Deposit chatbot that explains FDs, calculates returns, and simulates bookings — in English, Hindi, Tamil, Telugu, and Bengali.
@@ -180,3 +181,6 @@ Supports amount/tenure parsing from natural language: `"1 lakh"`, `"50k"`, `"18 
 | Frontend | Vanilla HTML + CSS + JS (ESM)  |
 | Language | Unicode + Keyword Detection    |
 | Design   | Dark UI, Glassmorphism, CSS3   |
+=======
+# Vernacular_FD_Advisor
+>>>>>>> abad86e393bdca3a03ebef2c9bad9010b706aca0
