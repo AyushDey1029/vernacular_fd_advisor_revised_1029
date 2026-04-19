@@ -1,0 +1,16 @@
+{
+  "name": "vernacular-fd-advisor",
+  "version": "1.0.0",
+  "description": "Multilingual Fixed Deposit chatbot — full-stack (Node.js + Vanilla JS)",
+  "private": true,
+  "scripts": {
+    "server": "cd server && npm run dev",
+    "client": "cd client && npx serve . -p 3000",
+    "install:server": "cd server && npm install",
+    "setup": "npm run install:server",
+    "start": "npm run server"
+  },
+  "keywords": ["chatbot", "fixed-deposit", "multilingual", "openai", "nodejs"],
+  "author": "",
+  "license": "MIT"
+}
