@@ -19,34 +19,7 @@ const PORT = process.env.PORT || 5000;
 
 // ✅ FIXED CORS (Vercel + Local + No crashes)
 app.use(cors({
-  origin: (origin, callback) => {
-    try {
-      // Allow requests with no origin (Postman, server-to-server)
-      if (!origin) return callback(null, true);
-
-      // Allow localhost
-      if (origin.includes('localhost')) {
-        return callback(null, true);
-      }
-
-      // Allow ALL Vercel deployments
-      if (origin.includes('.vercel.app')) {
-        return callback(null, true);
-      }
-
-      // Optional: allow custom env origin
-      if (process.env.CLIENT_ORIGIN && origin === process.env.CLIENT_ORIGIN) {
-        return callback(null, true);
-      }
-
-      // ❌ Reject silently (DO NOT throw error)
-      return callback(null, false);
-
-    } catch (err) {
-      console.error("CORS Error:", err);
-      return callback(null, false);
-    }
-  },
+  origin: true, // Allow all origins dynamically
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true
 }));
