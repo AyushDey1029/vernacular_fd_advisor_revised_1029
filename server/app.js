@@ -2,18 +2,9 @@
  * app.js — Main Express server entry point
  *
  * Vernacular FD Advisor — Backend
- * --------------------------------
- * A multilingual chatbot backend for Fixed Deposit guidance.
- *
- * Routes:
- *   POST /api/chat         — Chat with the FD advisor
- *   POST /api/booking      — Book an FD (mock)
- *   GET  /api/booking/:ref — Get booking by reference
- *   GET  /api/bookings     — List all bookings
- *   GET  /api/health       — Health check
  */
 
-require('dotenv').config(); // Load .env variables
+require('dotenv').config();
 
 const express = require('express');
 const cors    = require('cors');
@@ -26,28 +17,44 @@ const PORT = process.env.PORT || 5000;
 
 // ── Middleware ────────────────────────────────────────────────────────────────
 
-// Allow all origins in development and mapped ORIGIN in Prod. 
-const allowedOrigins = [
-  'http://localhost:3000',
-  process.env.CLIENT_ORIGIN,
-].filter(Boolean);
-
+// ✅ FIXED CORS (Vercel + Local + No crashes)
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow same-origin (origin is undefined) or allowed origins
-    if (!origin || allowedOrigins.includes(origin) || origin.includes('vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+  origin: (origin, callback) => {
+    try {
+      // Allow requests with no origin (Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      // Allow localhost
+      if (origin.includes('localhost')) {
+        return callback(null, true);
+      }
+
+      // Allow ALL Vercel deployments
+      if (origin.includes('.vercel.app')) {
+        return callback(null, true);
+      }
+
+      // Optional: allow custom env origin
+      if (process.env.CLIENT_ORIGIN && origin === process.env.CLIENT_ORIGIN) {
+        return callback(null, true);
+      }
+
+      // ❌ Reject silently (DO NOT throw error)
+      return callback(null, false);
+
+    } catch (err) {
+      console.error("CORS Error:", err);
+      return callback(null, false);
     }
   },
   methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true
 }));
 
 // Parse incoming JSON bodies
 app.use(express.json());
 
-// Request logger (development)
+// Request logger (development only)
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, _res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
@@ -59,14 +66,18 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use('/api/chat',     chatRoutes);
 app.use('/api/booking',  bookingRoutes);
-app.use('/api/bookings', bookingRoutes); // alias for list endpoint
+app.use('/api/bookings', bookingRoutes);
 
-// Health check — useful for deployment monitoring
+// Health check
 app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'Vernacular FD Advisor API', timestamp: new Date().toISOString() });
+  res.json({
+    status: 'ok',
+    service: 'Vernacular FD Advisor API',
+    timestamp: new Date().toISOString()
+  });
 });
 
-// 404 handler for unknown routes
+// 404 handler
 app.use((_req, res) => {
   res.status(404).json({ error: 'Endpoint not found.' });
 });
@@ -77,13 +88,12 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error.' });
 });
 
-// ── Start Server (Only when run directly) ──────────────────────────────────
-// On Vercel, we export the app and DO NOT call listen()
+// ── Start Server (Only local, NOT Vercel) ─────────────────────────────────────
+
 if (require.main === module) {
   app.listen(PORT, () => {
-    console.log(`\n🚀 Vernacular FD Advisor API running on http://localhost:${PORT}`);
-    console.log(`   Groq API Key: ${process.env.GROQ_API_KEY ? '✅ Loaded' : '❌ NOT SET — add to .env'}`);
-    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`Groq API: ${process.env.GROQ_API_KEY ? 'Loaded' : 'Missing'}`);
   });
 }
 
