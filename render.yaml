@@ -1,8 +1,9 @@
 services:
+  # 1. Backend (Web Service)
   - type: web
     name: vernacular-fd-advisor-api
     env: node
-    plan: free # Forces Render to use the free tier
+    plan: free
     rootDir: server
     buildCommand: npm install
     startCommand: node app.js
@@ -12,6 +13,13 @@ services:
       - key: PORT
         value: 5000
       - key: GROQ_API_KEY
-        sync: false # You will enter this securely in the Render dashboard later
+        sync: false # You will enter this in the Render dashboard
       - key: CLIENT_ORIGIN
-        sync: false # You will enter your Netlify URL here later
+        sync: false # You will enter your frontend URL here later
+
+  # 2. Frontend (Static Site)
+  - type: static
+    name: vernacular-fd-advisor-client
+    env: static
+    rootDir: client
+    publishDir: .
