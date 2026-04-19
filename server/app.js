@@ -76,12 +76,14 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error.' });
 });
 
-// ── Start Server ──────────────────────────────────────────────────────────────
-
-app.listen(PORT, () => {
-  console.log(`\n🚀 Vernacular FD Advisor API running on http://localhost:${PORT}`);
-  console.log(`   Groq API Key: ${process.env.GROQ_API_KEY ? '✅ Loaded' : '❌ NOT SET — add to .env'}`);
-  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
-});
+// ── Start Server (Only when run directly) ──────────────────────────────────
+// On Vercel, we export the app and DO NOT call listen()
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀 Vernacular FD Advisor API running on http://localhost:${PORT}`);
+    console.log(`   Groq API Key: ${process.env.GROQ_API_KEY ? '✅ Loaded' : '❌ NOT SET — add to .env'}`);
+    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}\n`);
+  });
+}
 
 module.exports = app;
