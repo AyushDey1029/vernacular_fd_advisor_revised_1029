@@ -3,11 +3,11 @@
  * Handles all HTTP calls to the backend server.
  */
 
-// In production (Netlify), window.BACKEND_URL is set via a <script> tag in index.html
+// In production (Vercel), we use relative paths. 
 // In local dev, it falls back to localhost:5000
 const BASE_URL = (typeof window !== 'undefined' && window.BACKEND_URL)
   ? `${window.BACKEND_URL}/api`
-  : 'http://localhost:5000/api';
+  : '/api';
 
 /**
  * Sends a chat message to the backend and returns the AI response.
