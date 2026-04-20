@@ -96,7 +96,12 @@ async function handleChat(req, res) {
       reply = getFDExplanation(language, scriptType);
     }
 
-    // 5. AI FALLBACK (CONTROLLED)
+    // 5. FD SUGGESTION (NEW)
+    else if (intent === "fd_suggestion") {
+      reply = localize("ask_suggestion_details");
+    }
+
+    // 6. AI FALLBACK (CONTROLLED)
     else {
       try {
         reply = await getChatResponse(

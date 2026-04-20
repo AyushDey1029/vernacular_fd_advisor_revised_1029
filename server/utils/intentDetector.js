@@ -62,6 +62,23 @@ const intentKeywords = {
     // Telugu Native
     'fd అంటే ఏమిటి', 'fd అంటే', 'fd యొక్క అర్థం', 'fd ఏమిటి'
   ],
+
+  fd_suggestion: [
+    'suggest', 'recommend', 'best scheme', 'which fd is good', 'best bank',
+    'kaun sa achha hai', 'salla', 'mashwara', 'vikalp',
+    
+    // Telugu Roman
+    'edi manchidi', 'best bank edi', 'suggestion kavali', 'suchana',
+    
+    // Hindi Roman
+    'sujhav', 'kaunsa best', 'best scheme',
+    
+    // Hindi Native
+    'सुझाव', 'सबसे अच्छा', 'बेस्ट', 'अच्छी स्कीम',
+    
+    // Telugu Native
+    'సూచన', 'ఏది మంచిది', 'బెస్ట్ బ్యాంక్'
+  ],
 };
 
 /**
@@ -171,6 +188,13 @@ function detectIntent(text) {
   // Fallback keyword check (keep existing behavior)
   if (intentKeywords.fd_explain.some(kw => lower.includes(kw))) {
     return 'fd_explain';
+  }
+
+  // ================================
+  // 5. FD SUGGESTION
+  // ================================
+  if (intentKeywords.fd_suggestion.some(kw => lower.includes(kw))) {
+    return 'fd_suggestion';
   }
 
   return 'unknown';

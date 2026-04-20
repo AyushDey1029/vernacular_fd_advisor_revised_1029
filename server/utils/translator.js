@@ -17,7 +17,17 @@ const romanMap = {
     "ब्याज:": "Byaaj:",
     "कुल राशि:": "Kul Rashi:",
     "FD शुरू करने के लिए, कृपया हमारी नजदीकी शाखा पर जाएँ या हमारे मोबाइल ऐप में 'Book FD' विकल्प का उपयोग करें।": "FD shuru karne ke liye, kripaya hamari najdiki shakha par jayein ya hamare mobile app mein 'Book FD' vikalp ka upyog karein.",
-    "हमारी वर्तमान FD ब्याज दरें आम नागरिकों के लिए 7.5% और वरिष्ठ नागरिकों के लिए 8.0% तक हैं।": "Hamari vartaman FD byaaj darein aam nagrikon ke liye 7.5% aur varishth nagrikon ke liye 8.0% tak hain."
+    "हमारी वर्तमान FD ब्याज दरें आम नागरिकों के लिए 7.5% और वरिष्ठ नागरिकों के लिए 8.0% तक हैं।": "Hamari vartaman FD byaaj darein aam nagrikon ke liye 7.5% aur varishth nagrikon ke liye 8.0% tak hain.",
+    "ज़रूर! मैं आपको सबसे अच्छी FD स्कीम चुनने में मदद कर सकता हूँ। कृपया नीचे दिए गए कार्ड में अपनी जानकारी भरें ताकि मैं आपको सही सुझाव दे सकूँ।": "Zaroor! Main aapko sabse achhi FD scheme chunne mein madad kar sakta hoon. Kripaya neeche diye gaye card mein apni jankari bharein taki main aapko sahi sujhav de sakun.",
+    "माफ़ कीजिए, आपकी दी गई जानकारी से मेल खाने वाली कोई स्कीम नहीं मिली।": "Maaf kijiye, aapki di gayi jankari se mel khane wali koi scheme nahi mili.",
+    "**आपके लिए सबसे अच्छी FD:**": "**Aapke liye sabse achhi FD:**",
+    "**बैंक:**": "**Bank:**",
+    "**ब्याज दर:**": "**Byaaj Dar:**",
+    "**क्यों:**": "**Kyon:**",
+    "**विकल्प:**": "**Vikalp:**",
+    "आपकी समयावधि के लिए सबसे अधिक रिटर्न": "Aapki samayavdhi ke liye sabse adhik return",
+    "प्रमुख बैंक से सुरक्षित विकल्प": "Pramukh bank se surakshit vikalp",
+    "प्रतिस्पर्धी विकल्प": "Pratispardhi vikalp"
   },
   te: {
     "Fixed Deposit (FD) ఒక సురక్షితమైన పెట్టుబడి, ఇక్కడ మీరు నిర్దిష్ట సమయానికి డబ్బును ఉంచి వడ్డీని పొందుతారు.": "Fixed Deposit (FD) oka surakshitamaina pettubadi, ikkada meeru nirdishta samayaniki dabbunu unchi vaddini pondutaru.",
@@ -30,7 +40,17 @@ const romanMap = {
     "సంవత్సరాలు": "samvatsaralu",
     "మొత్తం:": "Mottham:",
     "FD ప్రారంభించడానికి, దయచేసి మా సమీప శాఖను సందర్శించండి లేదా మా మొబైల్ యాప్‌లో 'Book FD' ఎంపికను ఉపయోగించండి.": "FD prarambhinchadaniki, dayachesi ma sameepa shakhanu sandarsinchandi leda ma mobile app lo 'Book FD' empika nu upayoginchandi.",
-    "మా ప్రస్తుత FD వడ్డీ రేట్లు సాధారణ పౌరులకు 7.5% మరియు సీనియర్ సిటిజన్లకు 8.0% వరకు ఉన్నాయి.": "Ma prastuta FD vaddi retlu sadharana pourulaku 7.5% mariyu senior citizen laku 8.0% varaku unnayi."
+    "మా ప్రస్తుత FD వడ్డీ రేట్లు సాధారణ పౌరులకు 7.5% మరియు సీనియర్ సిటిజన్లకు 8.0% వరకు ఉన్నాయి.": "Ma prastuta FD vaddi retlu sadharana pourulaku 7.5% mariyu senior citizen laku 8.0% varaku unnayi.",
+    "తప్పకుండా! మీకు సరైన FD స్కీమ్‌ను ఎంచుకోవడంలో నేను సహాయపడతాను. ఉత్తమ సూచన కోసం దయచేసి కింద ఉన్న కార్డులో మీ వివరాలను నింపండి.": "Thappakunda! Meeku saraina FD scheme nu enchukovadam lo nenu sahaya padathaanu. Uthama suchana kosam dayachesi kinda unna card lo mee vivaraalanu nimpandi.",
+    "క్షమించండి, మీరు ఇచ్చిన వివరాలకు సరిపోయే స్కీమ్ ఏదీ దొరకలేదు.": "Kshaminchandi, meeru ichina vivaraalaku saripoye scheme edi dorakaledu.",
+    "**మీ కోసం బెస్ట్ FD:**": "**Mee kosam best FD:**",
+    "**బ్యాంక్:**": "**Bank:**",
+    "**వడ్డీ రేటు:**": "**Vaddi Retu:**",
+    "**ఎందుకు:**": "**Enduku:**",
+    "**ప్రత్యామ్నాయం:**": "**Pratyamnayam:**",
+    "మీ కాలపరిమితికి అత్యధిక రాబడి": "Mee kalaparimitiki atyadhika rabadi",
+    "ప్రధాన బ్యాంక్ నుండి సురక్షితమైన ఎంపిక": "Pradhana bank nundi surakshitamaina empika",
+    "పోటీ ఎంపిక": "Poti empika"
   }
 };
 

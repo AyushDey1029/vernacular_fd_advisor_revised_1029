@@ -6,6 +6,7 @@ export const translations = {
       btnInterest: "💹 Interest Rate",
       btnCalculate: "🧮 Calculate returns",
       btnBook: "📝 Start FD",
+      btnSuggest: "💡 Suggest Best FD",
       placeholder: "Type your message...",
       changeLang: "🌍 Change Language"
     },
@@ -15,6 +16,7 @@ export const translations = {
       btnInterest: "💹 Interest Rate",
       btnCalculate: "🧮 Calculate returns",
       btnBook: "📝 Start FD",
+      btnSuggest: "💡 Suggest Best FD",
       placeholder: "Type your message...",
       changeLang: "🌍 Change Language"
     }
@@ -26,6 +28,7 @@ export const translations = {
       btnInterest: "💹 ब्याज दर",
       btnCalculate: "🧮 कैलकुलेट करें",
       btnBook: "📝 FD शुरू करें",
+      btnSuggest: "💡 बेस्ट FD सुझाव",
       placeholder: "अपना सवाल लिखें...",
       changeLang: "🌍 भाषा बदलें"
     },
@@ -35,6 +38,7 @@ export const translations = {
       btnInterest: "💹 Byaj Dar",
       btnCalculate: "🧮 Calculate karein",
       btnBook: "📝 FD shuru karein",
+      btnSuggest: "💡 Best FD sujhav",
       placeholder: "Apna sandesh likhein...",
       changeLang: "🌍 Bhasha Badlein"
     }
@@ -46,6 +50,7 @@ export const translations = {
       btnInterest: "💹 వడ్డీ రేటు",
       btnCalculate: "🧮 లెక్కించు",
       btnBook: "📝 FD మొదలు",
+      btnSuggest: "💡 బెస్ట్ FD సూచన",
       placeholder: "మీ సందేశాన్ని టైప్ చేయండి...",
       changeLang: "🌍 భాష మార్చు"
     },
@@ -55,6 +60,7 @@ export const translations = {
       btnInterest: "💹 Vaddi Reetu",
       btnCalculate: "🧮 Lekkinchu",
       btnBook: "📝 FD Modalu",
+      btnSuggest: "💡 Best FD Suchana",
       placeholder: "Mee sandesam type cheyandi...",
       changeLang: "🌍 Bhasha Marchu"
     }

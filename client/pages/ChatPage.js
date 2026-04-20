@@ -7,10 +7,11 @@
  *  - Rendering message list, quick buttons, typing indicator
  */
 
-import { sendMessage, bookFD } from '../services/api.js';
+import { sendMessage, bookFD, getFDSuggestion } from '../services/api.js';
 import { renderMessage }       from '../components/Message.js';
 import { renderCalcCard }      from '../components/CalcCard.js';
 import { renderBookingCard }   from '../components/BookingCard.js';
+import { renderSuggestionCard } from '../components/SuggestionCard.js';
 import { translations }        from '../utils/translations.js';
 
 // ── App State ────────────────────────────────────────────────────────────────
@@ -148,6 +149,96 @@ async function handleAIResponse(text) {
   if (data.intent === 'book_fd' && !bookingState) {
     setTimeout(() => startBookingFlow(), 800);
   }
+
+  // If intent was 'fd_suggestion', render the dynamic card
+  if (data.intent === 'fd_suggestion') {
+    setTimeout(() => showSuggestionForm(), 800);
+  }
+}
+
+// ── Suggestion Flow ───────────────────────────────────────────────────────────
+function showSuggestionForm() {
+  const mappedLang = langMap[currentLanguage] || 'english';
+  const langTranslations = translations[mappedLang] || translations['english'];
+  const t = langTranslations[currentScript] || langTranslations['native'];
+
+  let labels;
+
+  if (mappedLang === 'english') {
+    labels = {
+      title: 'FD Recommendation',
+      amount: 'Investment Amount (₹)',
+      tenure: 'Tenure (Years)',
+      age: 'Your Age',
+      submit: 'Find Best FD',
+      error: 'Please fill all fields',
+      done: 'Suggestion Received'
+    };
+  } else if (currentLanguage === 'hi') {
+    if (currentScript === 'roman') {
+      labels = {
+        title: 'FD Sujhav',
+        amount: 'Nivesh Rashi (₹)',
+        tenure: 'Samay (Saal)',
+        age: 'Aapki Aayu',
+        submit: 'Sabse Achha FD Khojein',
+        error: 'Kripaya sabhi jankari bharein',
+        done: 'Sujhav Mila'
+      };
+    } else {
+      labels = {
+        title: 'FD सुझाव',
+        amount: 'निवेश राशि (₹)',
+        tenure: 'समय (साल)',
+        age: 'आपकी आयु',
+        submit: 'सबसे अच्छा FD खोजें',
+        error: 'कृपया सभी जानकारी भरें',
+        done: 'सुझाव मिला'
+      };
+    }
+  } else if (currentLanguage === 'te') {
+    if (currentScript === 'roman') {
+      labels = {
+        title: 'FD Suchana',
+        amount: 'Pettubadi Mottham (₹)',
+        tenure: 'Kaalam (Samvatsaralu)',
+        age: 'Mee Vayassu',
+        submit: 'Best FD Kanugonandi',
+        error: 'Dayachesi anni vivaraalu nimpandi',
+        done: 'Suchana Andindi'
+      };
+    } else {
+      labels = {
+        title: 'FD సూచన',
+        amount: 'పెట్టుబడి మొత్తం (₹)',
+        tenure: 'కాలం (సంవత్సరాలు)',
+        age: 'మీ వయస్సు',
+        submit: 'బెస్ట్ FD కనుగొనండి',
+        error: 'దయచేసి అన్ని వివరాలు నింపండి',
+        done: 'సూచన అందింది'
+      };
+    }
+  }
+
+  const card = renderSuggestionCard({
+    labels,
+    onSubmit: async (details) => {
+      showTypingIndicator();
+      try {
+        const result = await getFDSuggestion({
+          ...details,
+          language: currentLanguage,
+          scriptType: currentScript
+        });
+        appendBotMessage(result.reply);
+      } catch (err) {
+        appendBotMessage(`❌ Error: ${err.message}`);
+      }
+    }
+  });
+
+  document.getElementById('messages').appendChild(card);
+  scrollToBottom();
 }
 
 // ── Booking Flow ──────────────────────────────────────────────────────────────
@@ -346,6 +437,7 @@ function getChatPageHTML(langCode, scriptCode) {
         <button class="quick-btn" id="btn-interest"   data-message="${t.btnInterest}">${t.btnInterest}</button>
         <button class="quick-btn" id="btn-calculate"  data-message="${t.btnCalculate}">${t.btnCalculate}</button>
         <button class="quick-btn" id="btn-book"       data-message="${t.btnBook}">${t.btnBook}</button>
+        <button class="quick-btn" id="btn-suggest"    data-message="${t.btnSuggest}">${t.btnSuggest}</button>
       </div>
 
       <footer class="chat-input-area">

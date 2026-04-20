@@ -11,6 +11,7 @@ const cors    = require('cors');
 
 const chatRoutes    = require('./routes/chatRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
+const suggestionRoutes = require('./routes/suggestionRoutes');
 
 const app  = express();
 const PORT = process.env.PORT || 5000;
@@ -40,6 +41,7 @@ if (process.env.NODE_ENV !== 'production') {
 app.use('/api/chat',     chatRoutes);
 app.use('/api/booking',  bookingRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/suggestion', suggestionRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

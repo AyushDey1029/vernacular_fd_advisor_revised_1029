@@ -82,3 +82,23 @@ export async function getBooking(ref) {
   if (!response.ok) throw new Error('Booking not found.');
   return response.json();
 }
+
+/**
+ * Fetches FD suggestions based on user details.
+ * @param {object} payload - { amount, tenure, age, language, scriptType }
+ * @returns {Promise<object>}
+ */
+export async function getFDSuggestion(payload) {
+  const response = await fetch(`${BASE_URL}/suggestion`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || 'Failed to get suggestions.');
+  }
+
+  return response.json();
+}

@@ -5,5 +5,13 @@
   "ask_amount": "Please tell amount, rate and time (example: ₹50000 for 2 years at 7%)",
   "fd_start_flow": "To start an FD, please visit our nearest branch or use the 'Book FD' option in our mobile app. You can also start manually by providing your details here.",
   "fd_rate_info": "Our current FD interest rates are up to 7.5% per annum for general citizens and 8.0% for senior citizens.",
+  "ask_suggestion_details": "Sure! I can help you find the best FD scheme. Please fill in your details in the card below to get the best recommendation.",
+  "sug_no_match": "Sorry, we couldn't find any schemes matching your criteria.",
+  "sug_best": "**Best FD for you:**",
+  "sug_bank": "**Bank:** {b}\n",
+  "sug_rate": "**Interest Rate:** {r}%\n",
+  "sug_why": "**Why:** {w}\n\n",
+  "sug_alt": "**Alternative:**\n",
+  "sug_alt_desc": "{b} ({r}%) — {n}",
   "fallback": "Sorry, something went wrong."
 }
