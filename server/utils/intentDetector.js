@@ -75,14 +75,7 @@ function detectIntent(text) {
   const lower = text.toLowerCase();
 
   // ================================
-  // 1. FD START
-  // ================================
-  if (intentKeywords.fd_start.some(kw => lower.includes(kw))) {
-    return 'fd_start';
-  }
-
-  // ================================
-  // 2. CALCULATE
+  // 1. CALCULATE (Prioritized)
   // ================================
   const hasNumbers = /\d+/.test(lower);
 
@@ -91,10 +84,29 @@ function detectIntent(text) {
     lower.includes('year') ||
     lower.includes('month') ||
     lower.includes('lakh') ||
+    lower.includes('lac') ||
     lower.includes('k') ||
     lower.includes('saal') ||
     lower.includes('mahina') ||
-    lower.includes('samay');
+    lower.includes('samay') ||
+    lower.includes('byaj') ||
+    // Hindi Native
+    lower.includes('साल') ||
+    lower.includes('महीना') ||
+    lower.includes('लाख') ||
+    lower.includes('ब्याज') ||
+    // Telugu Roman
+    lower.includes('samvatsaram') ||
+    lower.includes('samvatsaralu') ||
+    lower.includes('ellu') ||
+    lower.includes('eelu') ||
+    lower.includes('nela') ||
+    lower.includes('vaddi') ||
+    // Telugu Native
+    lower.includes('సంవత్సరం') ||
+    lower.includes('ఏళ్ళు') ||
+    lower.includes('నెల') ||
+    lower.includes('వడ్డీ');
 
   const hasCalcKeyword = intentKeywords.calculate.some(kw => lower.includes(kw));
 
@@ -104,6 +116,13 @@ function detectIntent(text) {
 
   if (hasCalcKeyword) {
     return 'calculate';
+  }
+
+  // ================================
+  // 2. FD START
+  // ================================
+  if (intentKeywords.fd_start.some(kw => lower.includes(kw))) {
+    return 'fd_start';
   }
 
   // ================================
