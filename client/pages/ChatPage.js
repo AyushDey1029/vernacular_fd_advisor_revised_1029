@@ -12,6 +12,7 @@ import { renderMessage }       from '../components/Message.js';
 import { renderCalcCard }      from '../components/CalcCard.js';
 import { renderBookingCard }   from '../components/BookingCard.js';
 import { renderSuggestionCard } from '../components/SuggestionCard.js';
+import { renderCalcInputCard }  from '../components/CalcInputCard.js';
 import { translations }        from '../utils/translations.js';
 
 // ── App State ────────────────────────────────────────────────────────────────
@@ -154,6 +155,85 @@ async function handleAIResponse(text) {
   if (data.intent === 'fd_suggestion') {
     setTimeout(() => showSuggestionForm(), 800);
   }
+
+  // If intent was 'calculate' but no calculation was returned (missing inputs)
+  if (data.intent === 'calculate' && !data.calculation) {
+    setTimeout(() => showCalcInputForm(), 800);
+  }
+}
+
+// ── Calculation Details Flow ──────────────────────────────────────────────────
+function showCalcInputForm() {
+  const mappedLang = langMap[currentLanguage] || 'english';
+
+  let labels;
+  if (mappedLang === 'english') {
+    labels = {
+      title: 'Calculate Returns',
+      amount: 'Investment Amount (₹)',
+      tenure: 'Tenure (Years)',
+      rate: 'Interest Rate (%)',
+      submit: 'Calculate',
+      error: 'Please fill all fields',
+      done: 'Calculating...'
+    };
+  } else if (currentLanguage === 'hi') {
+    if (currentScript === 'roman') {
+      labels = {
+        title: 'Returns Calculate Karein',
+        amount: 'Nivesh Rashi (₹)',
+        tenure: 'Samay (Saal)',
+        rate: 'Byaaj Dar (%)',
+        submit: 'Calculate',
+        error: 'Kripaya sabhi jankari bharein',
+        done: 'Calculate ho raha hai...'
+      };
+    } else {
+      labels = {
+        title: 'रिटर्न कैलकुलेट करें',
+        amount: 'निवेश राशि (₹)',
+        tenure: 'समय (साल)',
+        rate: 'ब्याज दर (%)',
+        submit: 'कैलकुलेट करें',
+        error: 'कृपया सभी जानकारी भरें',
+        done: 'कैलकुलेट किया जा रहा है...'
+      };
+    }
+  } else if (currentLanguage === 'te') {
+    if (currentScript === 'roman') {
+      labels = {
+        title: 'Returns Lekkinchu',
+        amount: 'Pettubadi Mottham (₹)',
+        tenure: 'Kaalam (Samvatsaralu)',
+        rate: 'Vaddi Reetu (%)',
+        submit: 'Lekkinchu',
+        error: 'Dayachesi anni vivaraalu nimpandi',
+        done: 'Lekkinchutundi...'
+      };
+    } else {
+      labels = {
+        title: 'రిటర్న్స్ లెక్కించు',
+        amount: 'పెట్టుబడి మొత్తం (₹)',
+        tenure: 'కాలం (సంవత్సరాలు)',
+        rate: 'వడ్డీ రేటు (%)',
+        submit: 'లెక్కించు',
+        error: 'దయచేసి అన్ని వివరాలు నింపండి',
+        done: 'లెక్కిస్తోంది...'
+      };
+    }
+  }
+
+  const card = renderCalcInputCard({
+    labels,
+    onSubmit: ({ amount, tenure, rate }) => {
+      // Create a natural text query that the backend's parse functions will cleanly understand.
+      let query = `Calculate ${amount} for ${tenure} years at ${rate}%`;
+      handleUserMessage(query);
+    }
+  });
+
+  document.getElementById('messages').appendChild(card);
+  scrollToBottom();
 }
 
 // ── Suggestion Flow ───────────────────────────────────────────────────────────
