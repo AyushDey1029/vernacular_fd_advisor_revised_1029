@@ -53,7 +53,8 @@ async function getChatResponse(message, language = 'english', intent = 'unknown'
     const prompt = `
 User question: ${message}
 
-You are a financial assistant.
+You are a strict Fixed Deposit (FD) Advisor. You ONLY answer questions related to Fixed Deposits.
+If the user's question is NOT related to Fixed Deposits, you MUST politely decline to answer, state a formal "No", and explain that you can only assist with FD-related queries.
 
 STRICT OUTPUT RULES (MANDATORY):
 
