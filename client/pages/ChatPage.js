@@ -175,6 +175,7 @@ function showCalcInputForm() {
       rate: 'Interest Rate (%)',
       submit: 'Calculate',
       error: 'Please fill all fields',
+      invalid: 'Please enter values greater than 0',
       done: 'Calculating...'
     };
   } else if (currentLanguage === 'hi') {
@@ -186,6 +187,7 @@ function showCalcInputForm() {
         rate: 'Byaaj Dar (%)',
         submit: 'Calculate',
         error: 'Kripaya sabhi jankari bharein',
+        invalid: 'Kripaya 0 se adhik mulya darj karein',
         done: 'Calculate ho raha hai...'
       };
     } else {
@@ -196,6 +198,7 @@ function showCalcInputForm() {
         rate: 'ब्याज दर (%)',
         submit: 'कैलकुलेट करें',
         error: 'कृपया सभी जानकारी भरें',
+        invalid: 'कृपया 0 से अधिक मूल्य दर्ज करें',
         done: 'कैलकुलेट किया जा रहा है...'
       };
     }
@@ -208,6 +211,7 @@ function showCalcInputForm() {
         rate: 'Vaddi Reetu (%)',
         submit: 'Lekkinchu',
         error: 'Dayachesi anni vivaraalu nimpandi',
+        invalid: 'Dayachesi 0 kante ekkuva viluvalanu namodu cheyandi',
         done: 'Lekkinchutundi...'
       };
     } else {
@@ -218,6 +222,7 @@ function showCalcInputForm() {
         rate: 'వడ్డీ రేటు (%)',
         submit: 'లెక్కించు',
         error: 'దయచేసి అన్ని వివరాలు నింపండి',
+        invalid: 'దయచేసి 0 కంటే ఎక్కువ విలువలను నమోదు చేయండి',
         done: 'లెక్కిస్తోంది...'
       };
     }
@@ -252,6 +257,7 @@ function showSuggestionForm() {
       age: 'Your Age',
       submit: 'Find Best FD',
       error: 'Please fill all fields',
+      invalid: 'Please enter values greater than 0',
       done: 'Suggestion Received'
     };
   } else if (currentLanguage === 'hi') {
@@ -263,6 +269,7 @@ function showSuggestionForm() {
         age: 'Aapki Aayu',
         submit: 'Sabse Achha FD Khojein',
         error: 'Kripaya sabhi jankari bharein',
+        invalid: 'Kripaya 0 se adhik mulya darj karein',
         done: 'Sujhav Mila'
       };
     } else {
@@ -273,6 +280,7 @@ function showSuggestionForm() {
         age: 'आपकी आयु',
         submit: 'सबसे अच्छा FD खोजें',
         error: 'कृपया सभी जानकारी भरें',
+        invalid: 'कृपया 0 से अधिक मूल्य दर्ज करें',
         done: 'सुझाव मिला'
       };
     }
@@ -285,6 +293,7 @@ function showSuggestionForm() {
         age: 'Mee Vayassu',
         submit: 'Best FD Kanugonandi',
         error: 'Dayachesi anni vivaraalu nimpandi',
+        invalid: 'Dayachesi 0 kante ekkuva viluvalanu namodu cheyandi',
         done: 'Suchana Andindi'
       };
     } else {
@@ -295,6 +304,7 @@ function showSuggestionForm() {
         age: 'మీ వయస్సు',
         submit: 'బెస్ట్ FD కనుగొనండి',
         error: 'దయచేసి అన్ని వివరాలు నింపండి',
+        invalid: 'దయచేసి 0 కంటే ఎక్కువ విలువలను నమోదు చేయండి',
         done: 'సూచన అందింది'
       };
     }
@@ -352,6 +362,10 @@ async function handleBookingFlow(text) {
 
     case 'ask_tenure': {
       const tenureYears = parseTenureText(text);
+      if (!tenureYears || tenureYears <= 0) {
+        appendBotMessage('Please enter a valid tenure. For example: 1 year, 2 years, or 18 months.');
+        return;
+      }
       bookingData.tenureYears = tenureYears;
       bookingState = 'confirm';
 
@@ -435,13 +449,22 @@ function parseIndianAmount(text) {
 
 function parseTenureText(text) {
   const lower = text.toLowerCase();
-  const months = lower.match(/(\d+)\s*month/);
-  if (months) return parseFloat(months[1]) / 12;
+  const months = lower.match(/(\d+\.?\d*)\s*month/);
+  if (months) {
+    const val = parseFloat(months[1]);
+    return val > 0 ? val / 12 : null;
+  }
   const years  = lower.match(/(\d+\.?\d*)\s*year/);
-  if (years)  return parseFloat(years[1]);
+  if (years) {
+    const val = parseFloat(years[1]);
+    return val > 0 ? val : null;
+  }
   const num   = lower.match(/\d+\.?\d*/);
-  if (num)    return parseFloat(num[0]);
-  return 1;
+  if (num) {
+    const val = parseFloat(num[0]);
+    return val > 0 ? val : null;
+  }
+  return null;
 }
 
 // ── Templates ─────────────────────────────────────────────────────────────────

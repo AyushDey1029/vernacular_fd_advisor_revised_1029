@@ -64,6 +64,11 @@ export function renderSuggestionCard({ onSubmit, labels }) {
       return;
     }
 
+    if (parseInt(rawAmount) <= 0 || parseFloat(tenure) <= 0 || parseInt(age) <= 0) {
+      alert(labels.invalid || 'Please enter values greater than 0');
+      return;
+    }
+
     // Dynamic animation on click
     submitBtn.disabled = true;
     const originalText = submitBtn.innerHTML;

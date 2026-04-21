@@ -13,5 +13,8 @@
   "sug_why": "**Why:** {w}\n\n",
   "sug_alt": "**Alternative:**\n",
   "sug_alt_desc": "{b} ({r}%) — {n}",
+  "sug_why_highest": "Highest return for your tenure",
+  "sug_why_safer": "Safer option from a major bank",
+  "sug_why_comp": "Competitive alternative",
   "fallback": "Sorry, something went wrong."
 }
