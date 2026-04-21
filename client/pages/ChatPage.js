@@ -21,6 +21,7 @@ let currentScript = 'native';
 let bookingState  = null;
 let bookingData   = {};
 let conversationHistory = [];
+let activeCalculator = null;
 
 const langMap = { en: 'english', hi: 'hindi', te: 'telugu', english: 'english', hindi: 'hindi', telugu: 'telugu' };
 
@@ -139,9 +140,24 @@ async function handleAIResponse(text) {
   conversationHistory.push({ role: 'user',      content: text });
   conversationHistory.push({ role: 'assistant', content: data.reply });
 
-  // If a calculation was returned, show a rich card
+  // If a calculation was returned, show an INTERACTIVE rich card
   if (data.calculation) {
-    appendBotMessage(data.reply, data.calculation);
+    if (activeCalculator) {
+      activeCalculator.remove();
+    }
+    const card = renderCalcInputCard({
+      labels: getCalculatorLabels(),
+      initialValues: {
+        amount: data.calculation.principal,
+        tenure: data.calculation.tenureYears,
+        rate: data.calculation.rate
+      },
+      onSubmit: () => {} // handled live
+    });
+    activeCalculator = card;
+    appendBotMessage(data.reply);
+    document.getElementById('messages').appendChild(card);
+    scrollToBottom();
   } else {
     appendBotMessage(data.reply);
   }
@@ -158,14 +174,28 @@ async function handleAIResponse(text) {
 
   // If intent was 'calculate' but no calculation was returned (missing inputs)
   if (data.intent === 'calculate' && !data.calculation) {
-    setTimeout(() => showCalcInputForm(), 800);
+    setTimeout(() => {
+      // If we already have an active calculator, just focus it instead of adding another
+      if (activeCalculator) {
+        activeCalculator.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+      showCalcInputForm();
+    }, 800);
+  }
+
+  // If a new prompt came in that wasn't 'calculate', we might want to "deactivate" the live part
+  if (data.intent !== 'calculate' && activeCalculator) {
+    // We don't remove it, but we can stop the live indicator or marking it as old
+    activeCalculator.querySelector('.live-indicator')?.remove();
+    activeCalculator.classList.replace('live-calculator', 'static-calculator');
+    activeCalculator = null;
   }
 }
 
 // ── Calculation Details Flow ──────────────────────────────────────────────────
-function showCalcInputForm() {
+function getCalculatorLabels() {
   const mappedLang = langMap[currentLanguage] || 'english';
-
   let labels;
   if (mappedLang === 'english') {
     labels = {
@@ -227,16 +257,27 @@ function showCalcInputForm() {
       };
     }
   }
+  return labels;
+}
+
+function showCalcInputForm() {
+  if (activeCalculator) {
+    activeCalculator.scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+
+  const labels = getCalculatorLabels();
 
   const card = renderCalcInputCard({
     labels,
     onSubmit: ({ amount, tenure, rate }) => {
-      // Create a natural text query that the backend's parse functions will cleanly understand.
+      // Create a natural text query for backend if ever needed
       let query = `Calculate ${amount} for ${tenure} years at ${rate}%`;
       handleUserMessage(query);
     }
   });
 
+  activeCalculator = card;
   document.getElementById('messages').appendChild(card);
   scrollToBottom();
 }

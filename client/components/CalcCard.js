@@ -4,20 +4,15 @@
  */
 
 /**
- * Creates a calculation result card DOM element.
- * @param {object} calc - { principal, rate, tenureYears, interest, maturity, type }
- * @returns {HTMLElement}
+ * Generates the HTML for the calculation result breakdown.
+ * @param {object} calc - { principal, rate, tenureYears, interest, maturity }
+ * @returns {string} - HTML string
  */
-export function renderCalcCard(calc) {
+export function getCalcCardHTML(calc) {
   const { principal, rate, tenureYears, interest, maturity } = calc;
-
-  const card = document.createElement('div');
-  card.className = 'calc-card';
-
-  // Progress bar: interest as % of maturity
   const interestPct = Math.round((interest / maturity) * 100);
 
-  card.innerHTML = `
+  return `
     <div class="calc-card-header">
       <span class="calc-icon">📊</span>
       <span class="calc-title">FD Maturity Breakdown</span>
@@ -54,7 +49,17 @@ export function renderCalcCard(calc) {
       </div>
     </div>
   `;
+}
 
+/**
+ * Creates a calculation result card DOM element.
+ * @param {object} calc - { principal, rate, tenureYears, interest, maturity, type }
+ * @returns {HTMLElement}
+ */
+export function renderCalcCard(calc) {
+  const card = document.createElement('div');
+  card.className = 'calc-card';
+  card.innerHTML = getCalcCardHTML(calc);
   return card;
 }
 
