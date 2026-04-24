@@ -72,8 +72,14 @@ async function handleChat(req, res) {
       const rateMatch = userMessage.match(/(\d+\.?\d*)\s*%/);
       const rate = rateMatch ? parseFloat(rateMatch[1]) : 7.0;
 
-      if (amount) {
-        const result = calculateSimpleInterest(amount, rate, tenure);
+      // Secondary Verification: If it's a "Calculate" intent but we found NO data,
+      // it might be a false positive or just a general "how to calculate" query.
+      // Fall back to AI for a more natural response unless it's a very clear request.
+      if (!amount && !tenure && !userMessage.includes('calculate') && !userMessage.includes('hisab')) {
+         reply = await getChatResponse(userMessage, language, intent, history, scriptType);
+      } 
+      else if (amount) {
+        const result = calculateSimpleInterest(amount, rate, tenure || 1); // Default to 1 year if only amount provided
         calculation = result;
         
         const p = formatINR(result.principal);

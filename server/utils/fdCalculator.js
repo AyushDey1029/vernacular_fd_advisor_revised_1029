@@ -56,38 +56,57 @@ function calculateCompoundInterest(principal, annualRate, tenureYears, n = 4) {
  * @returns {number|null}
  */
 function parseAmount(text) {
+  if (!text) return null;
   const lower = text.toLowerCase().replace(/,/g, '');
 
-  // 1. Match lakh/crore patterns: "1 lakh", "1.5 lac", "లక్ష", "लाख"
-  const lakhMatch = lower.match(/(\d+\.?\d*)\s*(lakh|lac|lak|laakh|laksha|లక్ష|लाख)/);
+  // 1. Explicit mention: "amount is 50000", "principal 1 lakh"
+  const explicitMatch = lower.match(/(?:amount|principal|investment|paisa|rakam)(?:\s+is)?\s*(\d+\.?\d*)\s*(lakh|lac|k|thousand|hazaar|hazar)?/);
+  if (explicitMatch) {
+    let val = parseFloat(explicitMatch[1]);
+    const unit = explicitMatch[2];
+    if (unit) {
+      if (unit.startsWith('l') || unit.startsWith('lac')) val *= 100000;
+      else if (unit === 'k' || unit.includes('thousand') || unit.includes('hazar')) val *= 1000;
+    }
+    return val > 0 ? val : null;
+  }
+
+  // 2. Match lakh/crore patterns: "1 lakh", "1.5 lac", "లక్ష", "लाख"
+  const lakhMatch = lower.match(/(\d+\.?\d*)\s*(lakh|lac|lak|laakh|laksha|లక్ష|లాఖ|लाख)/);
   if (lakhMatch) {
     const val = parseFloat(lakhMatch[1]) * 100000;
     return val > 0 ? val : null;
   }
 
-  // 2. Match "k" shorthand or thousand: "50k", "thousand", "hazaar", "వేయి", "हज़ार"
+  // 3. Match "k" shorthand or thousand: "50k", "thousand", "hazaar", "వేయి", "हज़ार"
   const kMatch = lower.match(/(\d+\.?\d*)\s*(k|thousand|hazaar|hazar|వేయి|हज़ार)/);
   if (kMatch) {
     const val = parseFloat(kMatch[1]) * 1000;
     return val > 0 ? val : null;
   }
 
-  // 3. Match numbers with currency hints: "100000 rupaiye", "rs 5000"
+  // 4. Match numbers with currency hints: "100000 rupaiye", "rs 5000"
   const currencyMatch = lower.match(/(?:rs\.?|rupees?|rupaiye?|rupaye?|రూపాయిలు)\s*(\d+\.?\d*)|(\d+\.?\d*)\s*(?:rs\.?|rupees?|rupaiye?|rupaye?|రూపాయిలు)/);
   if (currencyMatch) {
     const val = parseFloat(currencyMatch[1] || currencyMatch[2]);
     return val > 0 ? val : null;
   }
 
-  // 4. Plain number (Fallback) - Filter out numbers likely to be tenure or rate
-  // We look for numbers that aren't followed by tenure words
-  const matches = lower.matchAll(/(\d+\.?\d*)/g);
+  // 5. Plain number (Fallback) - Filter out numbers likely to be tenure or rate
+  const matches = [...lower.matchAll(/(\d+\.?\d*)/g)];
+  
+  // If there's ONLY ONE number and it's small (< 100), it's probably NOT the amount
+  if (matches.length === 1) {
+    const val = parseFloat(matches[0][0]);
+    if (val < 100 && !lower.includes('rs') && !lower.includes('rupee')) return null;
+  }
+
   for (const match of matches) {
     const val = parseFloat(match[0]);
     const index = match.index;
     const after = lower.substring(index + match[0].length).trim();
     
-    // If the number is followed by tenure words, it's probably not the amount
+    // If the number is followed by tenure words, it's NOT the amount
     if (/^(year|saal|sal|vars|varsh|ellu|eelu|samvatsaram|month|mahina|nela|%)/.test(after)) {
       continue;
     }
@@ -96,10 +115,7 @@ function parseAmount(text) {
     if (val >= 100) return val;
   }
 
-  // Last resort: first number
-  const firstNum = lower.match(/\d+\.?\d*/);
-  const val = firstNum ? parseFloat(firstNum[0]) : null;
-  return val > 0 ? val : null;
+  return null;
 }
 
 /**
@@ -108,9 +124,21 @@ function parseAmount(text) {
  * @returns {number} - tenure in years
  */
 function parseTenure(text) {
+  if (!text) return null;
   const lower = text.toLowerCase();
 
-  // 1. Months: mahina, maheene, nela, nelalu, month, months
+  // 1. Explicit mention: "tenure is 2 years", "samay 6 mahine"
+  const explicitMatch = lower.match(/(?:tenure|time|period|duration|samay|kalam|term)(?:\s+is)?\s*(\d+\.?\d*)\s*(year|month|saal|nela|mahina)?/);
+  if (explicitMatch) {
+    let val = parseFloat(explicitMatch[1]);
+    const unit = explicitMatch[2];
+    if (unit && (unit.includes('month') || unit.includes('nela') || unit.includes('mahina'))) {
+      return val / 12;
+    }
+    return val;
+  }
+
+  // 2. Months: mahina, maheene, nela, nelalu, month, months
   const monthsTerms = 'month|mahina|maheene|mahena|nela|nelalu|నెల|నెలలు|మహిన|మహినె|మహేన|మహీనా|మహీనే|महीना|महीने';
   const monthsMatch = lower.match(new RegExp(`(\\d+\\.?\\d*)\\s*(${monthsTerms})`));
   if (monthsMatch) {
@@ -118,7 +146,7 @@ function parseTenure(text) {
     return val > 0 ? val / 12 : null;
   }
 
-  // 2. Years: year, saal, sal, vars, varsh, eelu, samvatsaram, ఏళ్ళు, సంవత్సరం, साल, वर्ष
+  // 3. Years: year, saal, sal, vars, varsh, eelu, samvatsaram, ఏళ్ళు, సంవత్సరం, साल, वर्ष
   const yearsTerms = 'year|saal|sal|vars|varsh|ellu|eelu|samvatsaram|samvatsaralu|ఏళ్ళు|సంవత్సరం|साल|वर्ष';
   const yearsMatch = lower.match(new RegExp(`(\\d+\\.?\\d*)\\s*(${yearsTerms})`));
   if (yearsMatch) {
@@ -126,24 +154,29 @@ function parseTenure(text) {
     return val > 0 ? val : null;
   }
 
-  // 3. Fallback: Search for a "small" number that isn't the rate (%) or the large principal
-  const matches = lower.matchAll(/(\d+\.?\d*)/g);
+  // 4. Fallback: Search for a "small" number that isn't the rate (%) or a large principal
+  const matches = [...lower.matchAll(/(\d+\.?\d*)/g)];
+
+  // If ONLY ONE number is present and it's small, assume it's tenure
+  if (matches.length === 1) {
+    const val = parseFloat(matches[0][0]);
+    if (val > 0 && val < 50) return val;
+  }
+
   for (const match of matches) {
     const val = parseFloat(match[0]);
     const index = match.index;
     const after = lower.substring(index + match[0].length).trim();
     
-    // Skip if it's the interest rate
     if (after.startsWith('%')) continue;
     
-    // Skip if it's likely the principal amount (large number)
-    if (val >= 1000) continue;
+    // Ignore large numbers (likely principal)
+    if (val >= 100) continue;
 
-    // If it's a small standalone number, assume it's tenure
     return val > 0 ? val : null;
   }
 
-  return null; // Don't default to 1 year if parsing fails or returns 0
+  return null;
 }
 
 /** Helper: Round to 2 decimal places */
